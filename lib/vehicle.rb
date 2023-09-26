@@ -26,4 +26,8 @@ class Vehicle
   def electric_vehicle?
     @engine == :ev
   end
+
+  def change_plate_type(new_plate_type)
+    @plate_type = new_plate_type
+  end
 end
