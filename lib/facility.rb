@@ -30,5 +30,7 @@ class Facility
       @collected_fees += 100
       vehicle.change_plate_type(:regular)
     end
+    
+    @registered_vehicles.push(vehicle)
   end
 end
