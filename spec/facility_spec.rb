@@ -5,8 +5,7 @@ RSpec.describe Facility do
     let(:facility_2) { Facility.new({ name: 'DMV Northeast Branch', address: '4685 Peoria Street Suite 101 Denver CO 80239', phone: '(720) 865-4600' }) }
     let(:cruz) { Vehicle.new({ vin: '123456789abcdefgh', year: 2012, make: 'Chevrolet', model: 'Cruz', engine: :ice }) }
     let(:bolt) { Vehicle.new({ vin: '987654321abcdefgh', year: 2019, make: 'Chevrolet', model: 'Bolt', engine: :ev }) }
-    let(:camero) { Vehicle.new({ vin: '1a2b3c4d5e6f', year: 1969, make: 'Chevrolet', model: 'Camaro', engine: :ice }) }
-
+    let(:camaro) { Vehicle.new({ vin: '1a2b3c4d5e6f', year: 1969, make: 'Chevrolet', model: 'Camaro', engine: :ice }) }
 
   describe '#initialize' do
     it 'can initialize' do
@@ -39,13 +38,13 @@ RSpec.describe Facility do
         expect(facility_1.collected_fees).to eq(100)
       end
 
-      # it 'can set a vehicles plate type' do
-      #   facility_1.add_service('Vehicle Registration')
-      #   expect(cruz.plate_type).to eq(nil)
+      it 'can set a vehicles plate type' do
+        facility_1.add_service('Vehicle Registration')
+        expect(cruz.plate_type).to eq(nil)
 
-      #   facility_1.register_vehicle(cruz)
-      #   expect(cruz.plate_type).to eq(:regular)
-      # end
+        facility_1.register_vehicle(cruz)
+        expect(cruz.plate_type).to eq(:regular)
+      end
     end
   end
 end

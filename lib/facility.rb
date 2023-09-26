@@ -22,10 +22,13 @@ class Facility
   def register_vehicle(vehicle)
     if vehicle.antique?
       @collected_fees += 25 
+      vehicle.change_plate_type(:antique)
     elsif vehicle.electric_vehicle?
       @collected_fees += 200
+      vehicle.change_plate_type(:ev)
     else
       @collected_fees += 100
+      vehicle.change_plate_type(:regular)
     end
   end
 end
