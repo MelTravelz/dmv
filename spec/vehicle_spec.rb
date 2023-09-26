@@ -41,4 +41,12 @@ RSpec.describe Vehicle do
       expect(cruz.plate_type).to eq(:regular)
     end
   end
+
+  describe '#change_registration_date' do
+    it 'can change the registration date of vehicle' do
+      expect(cruz.registration_date).to eq(nil)
+      cruz.change_registration_date
+      expect(cruz.registration_date).to eq(Date.today)
+    end
+  end
 end
