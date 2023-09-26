@@ -53,6 +53,14 @@ RSpec.describe Facility do
         facility_1.register_vehicle(cruz)
         expect(facility_1.registered_vehicles).to eq([cruz])
       end
+
+      it 'can add set a vehicles registration date' do
+        facility_1.add_service('Vehicle Registration')
+        expect(cruz.registration_date).to eq(nil)
+
+        facility_1.register_vehicle(cruz)
+        expect(cruz.registration_date).to eq(Date.today)
+      end
     end
   end
 end

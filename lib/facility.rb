@@ -31,6 +31,7 @@ class Facility
       vehicle.change_plate_type(:regular)
     end
     
+    vehicle.change_registration_date
     @registered_vehicles.push(vehicle)
   end
 end
