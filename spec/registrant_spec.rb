@@ -14,4 +14,14 @@ RSpec.describe Registrant do
       expect(willy_wonka.license_data).to eq({ :written=>false, :license=>false, :renewed=>false })
     end
   end
+
+  describe '#earn_permit' do
+    it 'can earn a permit' do
+      expect(willy_wonka.permit?).to eq(false)
+
+      willy_wonka.earn_permit
+
+      expect(willy_wonka.permit?).to eq(true)
+    end
+  end
 end
