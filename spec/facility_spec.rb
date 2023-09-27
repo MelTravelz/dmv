@@ -84,12 +84,6 @@ RSpec.describe Facility do
       end
     end
 
-    # let(:willy_wonka) { Registrant.new(name: "Willy Wonka", age: 40, permit: true) }
-    # let(:charlie) { Registrant.new(name: "Charlie Bucket", age: 14) }
-    # let(:violet) { Registrant.new(name: "Violet Beauregarde", age: 16, permit: true) }
-    # let(:veruca) { Registrant.new(name: "Veruca Salt", age: 16) }
-
-
     describe '#administer_written_test' do
       describe 'happy path tests' do
         it 'can administer a written test to a registrant (16+ age & has permit)' do
@@ -109,7 +103,7 @@ RSpec.describe Facility do
 
           expect(violet.license_data).to eq(original_license_data)
           expect(violet.permit?).to eq(true)
-          expect(violet.age?).to eq(16)
+          expect(violet.age).to eq(16)
 
           facility_1.administer_written_test(violet)
 
@@ -132,7 +126,7 @@ RSpec.describe Facility do
         it 'cannot administer a written test to a registrant if the facility does not offer that Service' do
           expect(violet.license_data).to eq(expected_license_data)
           expect(violet.permit?).to eq(true)
-          expect(violet.age?).to eq(16)
+          expect(violet.age).to eq(16)
 
           expect(facility_1.administer_written_test(violet)).to eq(false)
           expect(violet.license_data).to eq(expected_license_data)
@@ -141,7 +135,7 @@ RSpec.describe Facility do
         it 'cannot administer a written test to a registrant age 16+ without a permit' do
           expect(veruca.license_data).to eq(expected_license_data)
           expect(veruca.permit?).to eq(false)
-          expect(veruca.age?).to eq(16)
+          expect(veruca.age).to eq(16)
 
           expect(facility_1.administer_written_test(veruca)).to eq(false)
           expect(veruca.license_data).to eq(expected_license_data)
@@ -150,7 +144,7 @@ RSpec.describe Facility do
         it 'cannot administer a written test to a registrant under the age of 14' do
           expect(charlie.license_data).to eq(expected_license_data)
           expect(charlie.permit?).to eq(true)
-          expect(charlie.age?).to eq(14)
+          expect(charlie.age).to eq(14)
 
           expect(facility_1.administer_written_test(charlie)).to eq(false)
           expect(charlie.license_data).to eq(expected_license_data)

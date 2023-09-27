@@ -9,7 +9,7 @@ RSpec.describe Registrant do
     it 'can initialize' do
       expect(willy_wonka).to be_an_instance_of(Registrant)
       expect(willy_wonka.name).to eq("Willy Wonka")
-      expect(willy_wonka.age?).to eq(40)
+      expect(willy_wonka.age).to eq(40)
       expect(willy_wonka.permit?).to eq(false)
       expect(willy_wonka.license_data).to eq({ :written=>false, :license=>false, :renewed=>false })
     end
