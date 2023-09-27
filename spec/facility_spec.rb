@@ -8,6 +8,14 @@ RSpec.describe Facility do
     let(:camaro) { Vehicle.new({ vin: '1a2b3c4d5e6f', year: 1969, make: 'Chevrolet', model: 'Camaro', engine: :ice }) }
 
   describe '#initialize' do
+    let(:expected_fee_info) do
+      {
+        antique: { fee: 25, plate_type: :antique }, 
+        electric: { fee: 200, plate_type: :ev },
+        regular: { fee: 100, plate_type: :regular }
+      }
+    end
+
     it 'can initialize' do
       expect(facility_1).to be_an_instance_of(Facility)
       expect(facility_1.name).to eq('DMV Tremont Branch')
@@ -16,6 +24,7 @@ RSpec.describe Facility do
       expect(facility_1.services).to eq([])
       expect(facility_1.registered_vehicles).to eq([])
       expect(facility_1.collected_fees).to eq(0)
+      expect(facility_1.fee_info).to eq(expected_fee_info)
     end
   end
 
@@ -62,18 +71,13 @@ RSpec.describe Facility do
         expect(cruz.registration_date).to eq(Date.today)
       end
     end
+
+    describe '#determine_vehicle_type' do
+      it 'can determine the vehicle type' do
+        expect(facility_1.determine_vehicle_type(cruz)).to eq(:regular)
+        expect(facility_1.determine_vehicle_type(bolt)).to eq(:electric)
+        expect(facility_1.determine_vehicle_type(camaro)).to eq(:antique)
+      end
+    end
   end
 end
-
-# facility_1.add_service('Vehicle Registration')
-
-#   expect(cruz.registration_date).to eq(nil)
-#   expect(facility_1.registered_vehicles).to eq([])
-#   expect(facility_1.collected_fees).to eq(0)
-
-#   facility_1.register_vehicle(cruz)
-
-#   expect(cruz.registration_date).to eq(Date.today)
-#   expect(cruz.plate_type).to eq(:regular)
-#   expect(facility_1.registered_vehicles).to eq([cruz])
-#   expect(facility_1.collected_fees).to eq(100)
