@@ -139,7 +139,7 @@ RSpec.describe Facility do
         end
 
         it 'cannot administer a written test to a registrant age 16+ without a permit' do
-          expect(veruca.license_data).to eq(original_license_data)
+          expect(veruca.license_data).to eq(expected_license_data)
           expect(veruca.permit?).to eq(false)
           expect(veruca.age?).to eq(16)
 
