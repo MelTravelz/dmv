@@ -86,21 +86,27 @@ RSpec.describe Facility do
 
     describe '#administer_written_test' do
       describe 'happy path tests' do
-        it 'can administer a written test to a registrant (16+ age & has permit)' do
-          original_license_data = {
-            written: false, 
-            license: false, 
-            renewed: false
-          }
-
-          updated_license_data = {
-            written: true, 
-            license: false, 
-            renewed: false
-          }
-
+        before(:each) do
           facility_1.add_service('Written Test')
+        end
 
+        let(:original_license_data) do 
+          {
+          written: false, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:updated_license_data) do 
+          {
+          written: true, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        it 'can administer a written test to a registrant (16+ age & has permit)' do
           expect(violet.license_data).to eq(original_license_data)
           expect(violet.permit?).to eq(true)
           expect(violet.age).to eq(16)
@@ -109,13 +115,26 @@ RSpec.describe Facility do
 
           expect(violet.license_data).to eq(updated_license_data)
         end
+
+        it 'can administer a written test to a registrant (16+ age) after earning a permit' do
+          expect(veruca.license_data).to eq(original_license_data)
+          expect(veruca.permit?).to eq(false)
+          expect(veruca.age).to eq(16)
+          expect(facility_1.administer_written_test(veruca)).to eq(false)
+
+          veruca.earn_permit
+          expect(veruca.permit?).to eq(true)
+          facility_1.administer_written_test(veruca)
+          expect(veruca.license_data).to eq(updated_license_data)
+        end
       end
 
       describe 'sad path tests' do
         before(:each) do
           facility_1.add_service('Vehicle Registration')
         end
-        let(:expected_license_data) do 
+
+        let(:original_license_data) do 
           {
           written: false, 
           license: false, 
@@ -124,30 +143,34 @@ RSpec.describe Facility do
         end
 
         it 'cannot administer a written test to a registrant if the facility does not offer that Service' do
-          expect(violet.license_data).to eq(expected_license_data)
+          expect(violet.license_data).to eq(original_license_data)
           expect(violet.permit?).to eq(true)
           expect(violet.age).to eq(16)
 
           expect(facility_1.administer_written_test(violet)).to eq(false)
-          expect(violet.license_data).to eq(expected_license_data)
+          expect(violet.license_data).to eq(original_license_data)
         end
 
         it 'cannot administer a written test to a registrant age 16+ without a permit' do
-          expect(veruca.license_data).to eq(expected_license_data)
+          facility_1.add_service('Written Test')
+
+          expect(veruca.license_data).to eq(original_license_data)
           expect(veruca.permit?).to eq(false)
           expect(veruca.age).to eq(16)
 
           expect(facility_1.administer_written_test(veruca)).to eq(false)
-          expect(veruca.license_data).to eq(expected_license_data)
+          expect(veruca.license_data).to eq(original_license_data)
         end
 
         it 'cannot administer a written test to a registrant under the age of 14' do
-          expect(charlie.license_data).to eq(expected_license_data)
+          facility_1.add_service('Written Test')
+          
+          expect(charlie.license_data).to eq(original_license_data)
           expect(charlie.permit?).to eq(true)
           expect(charlie.age).to eq(14)
 
           expect(facility_1.administer_written_test(charlie)).to eq(false)
-          expect(charlie.license_data).to eq(expected_license_data)
+          expect(charlie.license_data).to eq(original_license_data)
         end
       end
     end
