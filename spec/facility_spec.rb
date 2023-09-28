@@ -6,6 +6,10 @@ RSpec.describe Facility do
     let(:cruz) { Vehicle.new({ vin: '123456789abcdefgh', year: 2012, make: 'Chevrolet', model: 'Cruz', engine: :ice }) }
     let(:bolt) { Vehicle.new({ vin: '987654321abcdefgh', year: 2019, make: 'Chevrolet', model: 'Bolt', engine: :ev }) }
     let(:camaro) { Vehicle.new({ vin: '1a2b3c4d5e6f', year: 1969, make: 'Chevrolet', model: 'Camaro', engine: :ice }) }
+    let(:willy_wonka) { Registrant.new(name: "Willy Wonka", age: 40) }
+    let(:charlie) { Registrant.new(name: "Charlie Bucket", age: 14, permit: true) }
+    let(:violet) { Registrant.new(name: "Violet Beauregarde", age: 16, permit: true) }
+    let(:veruca) { Registrant.new(name: "Veruca Salt", age: 16) }
 
   describe '#initialize' do
     let(:expected_fee_info) do
@@ -79,5 +83,102 @@ RSpec.describe Facility do
         expect(facility_1.determine_vehicle_type(camaro)).to eq(:antique)
       end
     end
+
+    describe '#administer_written_test' do
+      describe 'happy path tests' do
+        before(:each) do
+          facility_1.add_service('Written Test')
+        end
+
+        let(:original_license_data) do 
+          {
+          written: false, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:updated_license_data) do 
+          {
+          written: true, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        it 'can administer a written test to a registrant (16+ age & has permit)' do
+          expect(violet.license_data).to eq(original_license_data)
+          expect(violet.permit?).to eq(true)
+          expect(violet.age).to eq(16)
+
+          facility_1.administer_written_test(violet)
+
+          expect(violet.license_data).to eq(updated_license_data)
+        end
+
+        it 'can administer a written test to a registrant (16+ age) after earning a permit' do
+          expect(veruca.license_data).to eq(original_license_data)
+          expect(veruca.permit?).to eq(false)
+          expect(veruca.age).to eq(16)
+          expect(facility_1.administer_written_test(veruca)).to eq(false)
+
+          veruca.earn_permit
+          expect(veruca.permit?).to eq(true)
+          facility_1.administer_written_test(veruca)
+          expect(veruca.license_data).to eq(updated_license_data)
+        end
+      end
+
+      describe 'sad path tests' do
+        before(:each) do
+          facility_1.add_service('Vehicle Registration')
+        end
+
+        let(:original_license_data) do 
+          {
+          written: false, 
+          license: false, 
+          renewed: false 
+          }
+        end
+
+        it 'cannot administer a written test to a registrant if the facility does not offer that Service' do
+          expect(violet.license_data).to eq(original_license_data)
+          expect(violet.permit?).to eq(true)
+          expect(violet.age).to eq(16)
+
+          expect(facility_1.administer_written_test(violet)).to eq(false)
+          expect(violet.license_data).to eq(original_license_data)
+        end
+
+        it 'cannot administer a written test to a registrant age 16+ without a permit' do
+          facility_1.add_service('Written Test')
+
+          expect(veruca.license_data).to eq(original_license_data)
+          expect(veruca.permit?).to eq(false)
+          expect(veruca.age).to eq(16)
+
+          expect(facility_1.administer_written_test(veruca)).to eq(false)
+          expect(veruca.license_data).to eq(original_license_data)
+        end
+
+        it 'cannot administer a written test to a registrant under the age of 14' do
+          facility_1.add_service('Written Test')
+          
+          expect(charlie.license_data).to eq(original_license_data)
+          expect(charlie.permit?).to eq(true)
+          expect(charlie.age).to eq(14)
+
+          expect(facility_1.administer_written_test(charlie)).to eq(false)
+          expect(charlie.license_data).to eq(original_license_data)
+        end
+      end
+    end
+
+    # describe '#administer_road_test' do
+    # end
+
+    # describe '#renew_drivers_license' do
+    # end
   end
 end

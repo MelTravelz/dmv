@@ -40,6 +40,11 @@ class Facility
     return :electric if vehicle.electric_vehicle?
     :regular
   end
+
+  def administer_written_test(registrant)
+    #returns nil:  registrant.license_data[:written] = true if @services.include?('Written Test') && registrant.age? >= 16 
+     @services.include?('Written Test') && registrant.age >= 16 && registrant.permit? == true ? registrant.license_data[:written] = true : false
+  end
 end
 
 
@@ -81,4 +86,3 @@ end
 #   vehicle.change_registration_date
 #   @registered_vehicles.push(vehicle)
 # end
-
