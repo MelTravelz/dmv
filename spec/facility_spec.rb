@@ -130,10 +130,6 @@ RSpec.describe Facility do
       end
 
       describe 'sad path tests' do
-        before(:each) do
-          facility_1.add_service('Vehicle Registration')
-        end
-
         let(:original_license_data) do 
           {
           written: false, 
@@ -175,8 +171,97 @@ RSpec.describe Facility do
       end
     end
 
-    # describe '#administer_road_test' do
-    # end
+    # let(:willy_wonka) { Registrant.new(name: "Willy Wonka", age: 40) }
+    # let(:charlie) { Registrant.new(name: "Charlie Bucket", age: 14, permit: true) }
+    # let(:violet) { Registrant.new(name: "Violet Beauregarde", age: 16, permit: true) }
+    # let(:veruca) { Registrant.new(name: "Veruca Salt", age: 16) }
+
+
+    describe '#administer_road_test' do
+      describe 'happy path tests' do
+        before(:each) do
+          facility_1.add_service('Written Test')
+          facility_1.add_service('Road Test')
+        end
+
+        let(:original_license_data) do 
+          {
+          written: false, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:updated_license_data) do 
+          {
+          written: true, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:received_license_data) do 
+          {
+          written: true, 
+          license: true, 
+          renewed: false
+          }
+        end
+
+        it 'can administer a road test & earn license to registrant who passes the written test' do
+          expect(veruca.license_data).to eq(original_license_data)
+          veruca.earn_permit
+          facility_1.administer_written_test(veruca)
+          expect(veruca.license_data).to eq(updated_license_data)
+
+          expect(facility_1.administer_road_test(veruca)).to eq(true)
+          expect(veruca.license_data).to eq(received_license_data)
+        end
+      end
+
+      describe 'sad path tests' do
+        before(:each) do
+          facility_1.add_service('Written Test')
+        end
+
+        let(:original_license_data) do 
+          {
+          written: false, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:updated_license_data) do 
+          {
+          written: true, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        it 'cannot administer a written test to a registrant if the facility does not offer that Service' do
+          expect(veruca.license_data).to eq(original_license_data)
+          veruca.earn_permit
+          facility_1.administer_written_test(veruca)
+          expect(veruca.license_data).to eq(updated_license_data)
+
+          expect(facility_1.administer_road_test(veruca)).to eq(false)
+          expect(veruca.license_data).to eq(updated_license_data)
+        end
+
+        it 'cannot adminster a road test to a registrant who only has a permit (did not take written test)' do
+          facility_1.add_service('Road Test')
+
+          expect(veruca.license_data).to eq(original_license_data)
+          expect(facility_1.administer_road_test(veruca)).to eq(false)
+          veruca.earn_permit
+
+          expect(facility_1.administer_road_test(veruca)).to eq(false)
+          expect(veruca.license_data).to eq(original_license_data)
+        end
+      end
+    end
 
     # describe '#renew_drivers_license' do
     # end
