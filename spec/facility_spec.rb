@@ -192,7 +192,7 @@ RSpec.describe Facility do
           }
         end
 
-        let(:udated_license_data) do 
+        let(:updated_license_data) do 
           {
           written: true, 
           license: false, 
@@ -232,7 +232,7 @@ RSpec.describe Facility do
           }
         end
 
-        let(:udated_license_data) do 
+        let(:updated_license_data) do 
           {
           written: true, 
           license: false, 
