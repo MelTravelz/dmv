@@ -50,6 +50,10 @@ class Facility
     #returns nil:  registrant.license_data[:license] = true if registrant.license_data[:written] == true
     @services.include?('Road Test') && registrant.license_data[:written] == true ? registrant.license_data[:license] = true : false
   end
+
+  def renew_license(registrant)
+    @services.include?('Renew License') && registrant.license_data[:license] == true ? registrant.license_data[:renewed] = true : false
+  end
 end
 
 
