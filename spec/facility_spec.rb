@@ -171,12 +171,6 @@ RSpec.describe Facility do
       end
     end
 
-    # let(:willy_wonka) { Registrant.new(name: "Willy Wonka", age: 40) }
-    # let(:charlie) { Registrant.new(name: "Charlie Bucket", age: 14, permit: true) }
-    # let(:violet) { Registrant.new(name: "Violet Beauregarde", age: 16, permit: true) }
-    # let(:veruca) { Registrant.new(name: "Veruca Salt", age: 16) }
-
-
     describe '#administer_road_test' do
       describe 'happy path tests' do
         before(:each) do
@@ -208,7 +202,7 @@ RSpec.describe Facility do
           }
         end
 
-        it 'can administer a road test & earn license to registrant who passes the written test' do
+        it 'can administer a road test if facility offers Service & give license to registrant who passes the written test' do
           expect(veruca.license_data).to eq(original_license_data)
           veruca.earn_permit
           facility_1.administer_written_test(veruca)
@@ -263,7 +257,114 @@ RSpec.describe Facility do
       end
     end
 
-    # describe '#renew_drivers_license' do
-    # end
+    # let(:willy_wonka) { Registrant.new(name: "Willy Wonka", age: 40) }
+    # let(:charlie) { Registrant.new(name: "Charlie Bucket", age: 14, permit: true) }
+    # let(:violet) { Registrant.new(name: "Violet Beauregarde", age: 16, permit: true) }
+    # let(:veruca) { Registrant.new(name: "Veruca Salt", age: 16) }
+
+    describe '#renew_drivers_license' do
+      describe 'happy path tests' do
+        before(:each) do
+          facility_1.add_service('Written Test')
+          facility_1.add_service('Road Test')
+          facility_1.add_service('Renew License')
+        end
+
+        let(:original_license_data) do 
+          {
+          written: false, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:updated_license_data) do 
+          {
+          written: true, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:received_license_data) do 
+          {
+          written: true, 
+          license: true, 
+          renewed: false
+          }
+        end
+
+        let(:renewed_license_data) do 
+          {
+          written: true, 
+          license: true, 
+          renewed: true
+          }
+        end
+
+        it "can renew a license if facility offers Service & registrant has a current license" do
+          expect(violet.license_data).to eq(original_license_data)
+          facility_1.administer_written_test(violet)
+          facility_1.administer_road_test(violet)
+          expect(violet.license_data).to eq(received_license_data)
+
+          expect(facility_1.renew_license(violet)).to eq(true)
+          expect(violet.license_data).to eq(renewed_license_data)
+        end
+      end
+
+      describe 'sad path tests' do
+        before(:each) do
+          facility_1.add_service('Written Test')
+          facility_1.add_service('Road Test')
+        end
+
+        let(:original_license_data) do 
+          {
+          written: false, 
+          license: false, 
+          renewed: false
+          }
+        end
+        
+        let(:updated_license_data) do 
+          {
+          written: true, 
+          license: false, 
+          renewed: false
+          }
+        end
+
+        let(:received_license_data) do 
+          {
+          written: true, 
+          license: true, 
+          renewed: false
+          }
+        end
+
+        it 'cannot renew a license to a registrant if the facility does not offer that Service' do
+          expect(violet.license_data).to eq(original_license_data)
+          facility_1.administer_written_test(violet)
+          facility_1.administer_road_test(violet)
+          expect(violet.license_data).to eq(received_license_data)
+
+          expect(facility_1.renew_license(violet)).to eq(false)
+          expect(violet.license_data).to eq(received_license_data)
+        end
+
+        it 'cannot renew a license if a registrant does not currently have a license' do
+          facility_1.add_service('Renew License')
+          expect(violet.license_data).to eq(original_license_data)
+          expect(facility_1.renew_license(violet)).to eq(false)
+          expect(violet.license_data).to eq(original_license_data)
+
+          facility_1.administer_written_test(violet)
+          expect(violet.license_data).to eq(updated_license_data)
+          expect(facility_1.renew_license(violet)).to eq(false)
+          expect(violet.license_data).to eq(updated_license_data)
+        end
+      end
+    end
   end
 end
