@@ -12,12 +12,13 @@ RSpec.describe FacilityFactory do
   end
 
   describe '#create_facility' do
-    co_dmv_office_locations = dds_service.co_dmv_office_locations
-    co_facilities = facility_factory.create_facility(co_dmv_office_locations)
+    it 'can create an array of facilities' do
+      co_dmv_office_locations = dds_service.co_dmv_office_locations
+      co_facilities = facility_factory.create_facility(co_dmv_office_locations)
 
-    expect(co_facilities).to be_an(Array)
-    # expect(co_facilities.size).to eq(1000)
-    # expect(co_facilities[0]).to be_a(Facility)
-
+      expect(co_facilities).to be_an(Array)
+      expect(co_facilities.size).to eq(5)
+      expect(co_facilities[0]).to be_a(Facility)
+    end
   end
 end
