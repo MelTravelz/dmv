@@ -14,7 +14,7 @@ RSpec.describe VehicleFactory do
   describe '#create_vehicles' do
     it 'can create an array of vehicles' do
       wa_ev_registrations = dds_service.wa_ev_registrations
-      wa_vehicles = vehicle_factory.create_vehicles(dds_service.wa_ev_registrations)
+      wa_vehicles = vehicle_factory.create_vehicles(wa_ev_registrations)
 
       expect(wa_vehicles).to be_an(Array)
       expect(wa_vehicles.size).to eq(1000)

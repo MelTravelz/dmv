@@ -10,4 +10,14 @@ RSpec.describe FacilityFactory do
       expect(dds_service).to be_an_instance_of(DmvDataService)
     end
   end
+
+  describe '#create_facility' do
+    co_dmv_office_locations = dds_service.co_dmv_office_locations
+    co_facilities = facility_factory.create_facility(co_dmv_office_locations)
+
+    expect(co_facilities).to be_an(Array)
+    # expect(co_facilities.size).to eq(1000)
+    # expect(co_facilities[0]).to be_a(Facility)
+
+  end
 end
